@@ -25,7 +25,7 @@ const timeLayout = "15:04:05"
 func main() {
 	// Expect exactly one command-line argument: the path to the log file
 	if len(os.Args) != 2 {
-		fmt.Println("Usage: log_parser <path_to_log_file>")
+		fmt.Println("Usage: log_delta <path_to_log_file>")
 		os.Exit(1)
 	}
 	logFilePath := os.Args[1]

@@ -20,7 +20,7 @@ This tool parses CSV-formatted log files containing job execution records and pr
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd log_parser
+cd log_delta
 
 # Build the application
 make build
@@ -32,14 +32,14 @@ make
 ## Usage
 
 ```bash
-./log_parser <log_file_path>
+./log_delta <log_file_path>
 ```
 
 ### Example
 ```bash
 # Build and run
 make build
-./log_parser /path/to/logfile
+./log_delta /path/to/logfile
 
 # Or with make (set LOG_FILE environment variable)
 LOG_FILE=/path/to/logfile make run
@@ -78,7 +78,7 @@ $ go test -v
 === RUN   TestCalculateDurationMidnight
 --- PASS: TestCalculateDurationMidnight (0.00s)
 PASS
-ok      log_parser      0.002s
+ok      log_delta      0.002s
 ```
 
 ## Log File Format
@@ -169,7 +169,7 @@ The tool uses fixed thresholds for job duration analysis:
 
 ### Project Structure
 ```
-log_parser/
+log_delta/
 ├── main.go          # Main application code
 ├── main_test.go     # Unit tests
 ├── Makefile         # Build automation

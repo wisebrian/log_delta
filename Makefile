@@ -1,7 +1,7 @@
-# Makefile for log_parser
+# Makefile for log_delta
 
 # Variables
-BINARY_NAME=log_parser
+BINARY_NAME=log_delta
 MAIN_FILE=main.go
 
 # Default target
