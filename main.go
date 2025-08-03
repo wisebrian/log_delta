@@ -25,7 +25,7 @@ const timeLayout = "15:04:05"
 func main() {
 	// Expect exactly one command-line argument: the path to the log file
 	if len(os.Args) != 2 {
-		fmt.Println("Usage: log_parser <log_file>")
+		fmt.Println("Usage: log_parser <path_to_log_file>")
 		os.Exit(1)
 	}
 	logFilePath := os.Args[1]
@@ -112,17 +112,17 @@ func reportJobDuration(pid string, status *JobStatus) {
 		missingField = "END"
 	}
 	if missingField != "" {
-		fmt.Printf("Incomplete job %s: missing %s\n", pid, missingField)
+		fmt.Printf("\033[31mIncomplete job %s: missing %s\033[31m\n", pid, missingField)
 		return
 	}
 	duration := calculateDuration(status.Start, status.End)
 	// Check duration thresholds and report accordingly
 	switch {
 	case duration > 10*time.Minute:
-		fmt.Printf("Error: Job %s took longer than 10 minutes: %s\n", pid, duration)
+		fmt.Printf("\033[31mError: Job %s took longer than 10 minutes: %s\033[31m\n", pid, duration)
 	case duration > 5*time.Minute:
-		fmt.Printf("Warning: Job %s took longer than 5 minutes: %s\n", pid, duration)
+		fmt.Printf("\033[33mWarning: Job %s tok longer than 5 minutes: %s\033[33m\n", pid, duration)
 	default:
-		fmt.Printf("Job %s duration: %s\n", pid, duration)
+		fmt.Printf("\033[32mJob %s duration: %s\033[32m\n", pid, duration)
 	}
 }

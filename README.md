@@ -1,13 +1,10 @@
 # Log Parser
-
 A Go utility for parsing job execution logs and reporting job durations with threshold-based alerts.
 
 ## Overview
-
 This tool parses CSV-formatted log files containing job execution records and provides duration analysis with configurable warning and error thresholds. It's designed to help monitor job performance and identify jobs that are taking longer than expected to complete.
 
 ## Features
-
 - Parses CSV log files with job start/end timestamps
 - Calculates job durations with automatic midnight wrap-around handling
 - Provides threshold-based alerting (warnings and errors)
@@ -19,9 +16,17 @@ This tool parses CSV-formatted log files containing job execution records and pr
 ### Prerequisites
 - Go 1.16 or later
 
-### Build from source
+### Clone and Build
 ```bash
-go build -o log_parser main.go
+# Clone the repository
+git clone <repository-url>
+cd log_parser
+
+# Build the application
+make build
+
+# Or just run make (build is the default target)
+make
 ```
 
 ## Usage
@@ -32,13 +37,52 @@ go build -o log_parser main.go
 
 ### Example
 ```bash
+# Build and run
+make build
 ./log_parser /path/to/logfile
+
+# Or with make (set LOG_FILE environment variable)
+LOG_FILE=/path/to/logfile make run
+```
+
+## Testing
+
+The project includes unit tests to ensure reliability and correctness.
+
+### Running Tests
+```bash
+# Run all tests
+make test
+
+# Run tests with coverage report
+make test-coverage
+
+# Or use go directly
+go test -v
+```
+
+### Test Coverage
+The test suite includes:
+- **CSV parsing validation** - Tests line parsing functionality
+- **Duration calculation** - Tests normal duration calculations
+- **Midnight wrap-around** - Tests jobs spanning midnight
+- **Edge cases** - Validates boundary conditions
+
+### Example Test Output
+```bash
+$ go test -v
+=== RUN   TestParseLine
+--- PASS: TestParseLine (0.00s)
+=== RUN   TestCalculateDuration
+--- PASS: TestCalculateDuration (0.00s)
+=== RUN   TestCalculateDurationMidnight
+--- PASS: TestCalculateDurationMidnight (0.00s)
+PASS
+ok      log_parser      0.002s
 ```
 
 ## Log File Format
-
 The tool expects CSV files with the following format:
-
 ```
 timestamp,description,status,pid
 ```
@@ -60,7 +104,6 @@ timestamp,description,status,pid
 ```
 
 ## Output Format
-
 The tool provides different output based on job duration:
 
 ### Normal Jobs
@@ -101,47 +144,73 @@ Example:
 - File access errors are handled gracefully
 
 ## Thresholds
-
 The tool uses fixed thresholds for job duration analysis:
-
 - **Normal**: ≤ 5 minutes
-- **Warning**: > 5 minutes and ≤ 10 minutes  
+- **Warning**: > 5 minutes and ≤ 10 minutes
 - **Error**: > 10 minutes
 
 ## Exit Codes
-
 - `0`: Success
 - `1`: Invalid usage or file access error
 
 ## Limitations
-
 - Only supports time-only format (HH:MM:SS), not full datetime
 - Assumes all jobs complete within a 24-hour period
 - Thresholds are hardcoded (not configurable via command line)
 - CSV parsing is basic (doesn't handle quoted fields with commas)
 
 ## Example Use Cases
-
 - Monitor cron job execution times
 - Analyze batch processing performance
 - Identify jobs that may be hanging or performing poorly
 - Generate daily/weekly job performance reports
 
+## Development
+
+### Project Structure
+```
+log_parser/
+├── main.go          # Main application code
+├── main_test.go     # Unit tests
+├── Makefile         # Build automation
+├── go.mod           # Go module file
+├── go.sum           # Go dependencies (auto-generated)
+└── README.md        # This file
+```
+
+### Development Commands
+```bash
+make build        # Build the application
+make test         # Run tests
+make test-coverage # Run tests with coverage
+make clean        # Remove build artifacts
+make fmt          # Format code
+make help         # Show all available commands
+```
+
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass: `go test`
+5. Submit a pull request
+
 ## Troubleshooting
 
 ### Common Issues
-
 1. **"Invalid log line" messages**: Check that your CSV has exactly 4 columns
 2. **"Error parsing timestamp" messages**: Ensure timestamps are in HH:MM:SS format
 3. **"Incomplete job" messages**: Verify that each job has both START and END entries with matching PIDs
 
 ### Debug Tips
-
 - Use line numbers in error messages to locate problematic entries
 - Verify CSV format matches expected structure
 - Check for extra whitespace or special characters in PID fields
+- Run tests to verify core functionality: `go test -v`
 
 ## To Improve:
- - Report generator as JSON file
- - Multiple files ingested at once
- - Email notification based on LogLevel 
+- Report generator as JSON file
+- Multiple files ingested at once
+- Email notification based on LogLevel
+- Configurable thresholds via command line
+- Enhanced CSV parsing with quoted field support
