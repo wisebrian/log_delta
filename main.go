@@ -96,17 +96,6 @@ func parseLine(line string) []string {
 // calculateDuration diffs the time difference between start and end times
 // Handles wrap-around at midnight by adding 24 hours if needed
 func calculateDuration(start, end time.Time) time.Duration {
-	/*if start == "" || end == "" {
-		return 0, fmt.Errorf("start or end time is empty")
-	}
-	startTime, err := time.Parse(timeLayout, start)
-	if err != nil {
-		return 0, fmt.Errorf("error parsing start time: %v", err)
-	}
-	endTime, err := time.Parse(timeLayout, end)
-	if err != nil {
-		return 0, fmt.Errorf("error parsing end time: %v", err)
-	}*/
 	duration := end.Sub(start)
 	if duration < 0 {
 		duration += 24 * time.Hour
@@ -130,7 +119,7 @@ func reportJobDuration(pid string, status *JobStatus) {
 	switch {
 	case duration > 10*time.Minute:
 		fmt.Printf("Error: Job %s took longer than 10 minutes: %s\n", pid, duration)
-	case duration > 10*time.Minute:
+	case duration > 5*time.Minute:
 		fmt.Printf("Warning: Job %s took longer than 5 minutes: %s\n", pid, duration)
 	default:
 		fmt.Printf("Job %s duration: %s\n", pid, duration)
