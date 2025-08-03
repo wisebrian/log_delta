@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -33,6 +34,50 @@ func main() {
 		os.Exit(1)
 	}
 	defer file.Close()
+	entries := make(map[string]*JobStatus)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := parseLine(line)
+		if len(parts) != 4 {
+			fmt.Printf("Invalid log line: %s\n", line)
+			continue
+		}
+		job := JobEntry{
+			Timestamp:   strings.TrimSpace(parts[0]),
+			Description: strings.TrimSpace(parts[1]),
+			Status:      strings.TrimSpace(parts[2]),
+			PID:         strings.TrimSpace(parts[3]),
+		}
+
+		parsedTime, err := time.Parse(timeLayout, job.Timestamp)
+		if err != nil {
+			fmt.Printf("Error parsing timestamp: %v\n", err)
+			continue
+		}
+		job.Timestamp = parsedTime.Format(timeLayout)
+		if _, ok := entries[job.PID]; !ok {
+			entries[job.PID] = &JobStatus{}
+		}
+		if job.Status == "START" {
+			entries[job.PID].Start = job.Timestamp
+		}
+		if job.Status == "END" {
+			entries[job.PID].End = job.Timestamp
+		}
+		if entries[job.PID].Start != "" && entries[job.PID].End != "" {
+			d, err := calculateDuration(entries[job.PID].Start, entries[job.PID].End)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			if d > 5*time.Minute && d < 10*time.Minute {
+				fmt.Printf("Warning: Job %s took longer than 5 minutes: %s\n", job.PID, d)
+			} else if d > 10*time.Minute {
+				fmt.Printf("Error: Job %s took longer than 10 minutes: %s\n", job.PID, d)
+			}
+		}
+	}
 }
 
 func parseLine(line string) []string {
