@@ -11,3 +11,17 @@ type JobEntry struct {
 	Status      string
 	PID         string
 }
+
+const timeLayout = "15:04:05"
+
+func main() {
+
+}
+
+func parseLine() {
+
+}
+
+func calculateDuration() {
+
+}
