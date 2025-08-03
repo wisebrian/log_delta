@@ -103,6 +103,7 @@ func calculateDuration(start, end time.Time) time.Duration {
 	return duration
 }
 
+// generate a small report
 func reportJobDuration(pid string, status *JobStatus) {
 	var missingField string
 	if status.Start.IsZero() {
@@ -115,7 +116,7 @@ func reportJobDuration(pid string, status *JobStatus) {
 		return
 	}
 	duration := calculateDuration(status.Start, status.End)
-
+	// Check duration thresholds and report accordingly
 	switch {
 	case duration > 10*time.Minute:
 		fmt.Printf("Error: Job %s took longer than 10 minutes: %s\n", pid, duration)
