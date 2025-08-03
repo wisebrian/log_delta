@@ -78,6 +78,26 @@ func main() {
 			}
 		}
 	}
+	for pid, status := range entries {
+		if status.Start == "" || status.End == "" {
+			fmt.Printf("Incomplete job %s: missing %s\n", pid,
+				map[bool]string{true: "END", false: "START"}[status.Start != ""])
+			continue
+		}
+		d, err := calculateDuration(status.Start, status.End)
+		if err != nil {
+			fmt.Printf("Error calculating duration for job %s: %v\n", pid, err)
+			continue
+		}
+
+		if d > 10*time.Minute {
+			fmt.Printf("Error: Job %s took longer than 10 minutes: %s\n", pid, d)
+		} else if d > 5*time.Minute {
+			fmt.Printf("Warning: Job %s took longer than 5 minutes: %s\n", pid, d)
+		} else {
+			fmt.Printf("Job %s duration: %s\n", pid, d)
+		}
+	}
 }
 
 func parseLine(line string) []string {
